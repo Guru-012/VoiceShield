@@ -9,6 +9,12 @@ import 'safety_tips_screen.dart';
 import 'settings_screen.dart';
 import '../record_voice_screen.dart';
 import 'live_protection_screen.dart';
+import 'call_role_screen.dart';
+
+// CHANGED:
+// We now open CallRoleScreen first.
+// CallRoleScreen will decide whether this device is Person A or Person B.
+import 'call_role_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -51,7 +57,6 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         _isBackendConnected = connected;
 
-        // Show the two latest analysis records
         _recentHistory = history.take(2).toList();
 
         _checkingHealth = false;
@@ -68,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // ================================================================
-  // OPEN UPLOAD SCREEN + REFRESH WHEN USER RETURNS
+  // OPEN UPLOAD SCREEN
   // ================================================================
 
   Future<void> _openUploadScreen() async {
@@ -79,12 +84,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Refresh history after analysis
     await _fetchStatusAndHistory();
   }
 
   // ================================================================
-  // OPEN RECORD SCREEN + REFRESH WHEN USER RETURNS
+  // OPEN RECORD SCREEN
   // ================================================================
 
   Future<void> _openRecordScreen() async {
@@ -95,7 +99,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Refresh history after recording/analysis
     await _fetchStatusAndHistory();
   }
 
@@ -115,7 +118,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Refresh when returning from History
     await _fetchStatusAndHistory();
   }
 
@@ -131,8 +133,46 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
-    // Refresh after returning
     await _fetchStatusAndHistory();
+  }
+
+  // ================================================================
+  // OPEN VOICESHIELD CALL
+  // ================================================================
+  //
+  // IMPORTANT:
+  //
+  // Previously this directly opened:
+  //
+  // RealCallScreen(
+  //   clientId: 'person_a',
+  //   role: 'A',
+  // )
+  //
+  // That meant this device was ALWAYS Person A.
+  //
+  // Now we open CallRoleScreen.
+  //
+  // CallRoleScreen will allow the user to select:
+  //
+  // PERSON A
+  //      OR
+  // PERSON B
+  //
+  // Then it will open RealCallScreen with the correct:
+  //
+  // clientId
+  // role
+  //
+  // ================================================================
+
+  Future<void> _openCallScreen() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => const CallRoleScreen(),
+      ),
+    );
   }
 
   // ================================================================
@@ -207,7 +247,8 @@ class _HomeScreenState extends State<HomeScreen> {
               // ======================================================
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment:
+                    MainAxisAlignment.spaceBetween,
 
                 children: [
                   Flexible(
@@ -219,10 +260,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       decoration: BoxDecoration(
                         color: _isBackendConnected
-                            ? AppTheme.safeGreen.withValues(alpha: 0.15)
-                            : AppTheme.dangerRed.withValues(alpha: 0.15),
+                            ? AppTheme.safeGreen.withValues(
+                                alpha: 0.15,
+                              )
+                            : AppTheme.dangerRed.withValues(
+                                alpha: 0.15,
+                              ),
 
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius:
+                            BorderRadius.circular(20),
 
                         border: Border.all(
                           color: _isBackendConnected
@@ -232,7 +278,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
 
                       child: Row(
-                        mainAxisSize: MainAxisSize.min,
+                        mainAxisSize:
+                            MainAxisSize.min,
 
                         children: [
                           Icon(
@@ -259,14 +306,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               style: TextStyle(
                                 fontSize: 12,
-                                fontWeight: FontWeight.w600,
+                                fontWeight:
+                                    FontWeight.w600,
 
-                                color: _isBackendConnected
-                                    ? AppTheme.safeGreen
-                                    : AppTheme.dangerRed,
+                                color:
+                                    _isBackendConnected
+                                        ? AppTheme.safeGreen
+                                        : AppTheme.dangerRed,
                               ),
 
-                              overflow: TextOverflow.ellipsis,
+                              overflow:
+                                  TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -280,7 +330,8 @@ class _HomeScreenState extends State<HomeScreen> {
                       size: 18,
                       color: AppTheme.textSecondary,
                     ),
-                    onPressed: _fetchStatusAndHistory,
+                    onPressed:
+                        _fetchStatusAndHistory,
                   ),
                 ],
               ),
@@ -293,30 +344,44 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Card(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding:
+                      const EdgeInsets.all(20),
 
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
 
                     children: [
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment:
+                            CrossAxisAlignment.start,
 
                         children: [
                           Container(
-                            padding: const EdgeInsets.all(12),
+                            padding:
+                                const EdgeInsets.all(
+                              12,
+                            ),
 
-                            decoration: BoxDecoration(
-                              color: AppTheme.cyanAccent.withValues(
+                            decoration:
+                                BoxDecoration(
+                              color: AppTheme
+                                  .cyanAccent
+                                  .withValues(
                                 alpha: 0.1,
                               ),
 
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius:
+                                  BorderRadius.circular(
+                                12,
+                              ),
                             ),
 
                             child: const Icon(
-                              Icons.verified_user_outlined,
-                              color: AppTheme.cyanAccent,
+                              Icons
+                                  .verified_user_outlined,
+                              color:
+                                  AppTheme.cyanAccent,
                               size: 32,
                             ),
                           ),
@@ -326,28 +391,33 @@ class _HomeScreenState extends State<HomeScreen> {
                           Expanded(
                             child: Column(
                               crossAxisAlignment:
-                                  CrossAxisAlignment.start,
+                                  CrossAxisAlignment
+                                      .start,
 
                               children: [
                                 Text(
                                   'Protect yourself from AI voice scams',
 
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleLarge
-                                      ?.copyWith(
-                                        fontSize: 18,
-                                      ),
+                                  style:
+                                      Theme.of(context)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                            fontSize: 18,
+                                          ),
                                 ),
 
-                                const SizedBox(height: 4),
+                                const SizedBox(
+                                  height: 4,
+                                ),
 
                                 Text(
                                   'Scan incoming voice messages or call recordings for synthetic AI cloning.',
 
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium,
+                                  style:
+                                      Theme.of(context)
+                                          .textTheme
+                                          .bodyMedium,
                                 ),
                               ],
                             ),
@@ -360,11 +430,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       SizedBox(
                         width: double.infinity,
 
-                        child: ElevatedButton.icon(
-                          onPressed: _openUploadScreen,
+                        child:
+                            ElevatedButton.icon(
+                          onPressed:
+                              _openUploadScreen,
 
                           icon: const Icon(
-                            Icons.analytics_outlined,
+                            Icons
+                                .analytics_outlined,
                           ),
 
                           label: const Text(
@@ -386,11 +459,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Card(
                 color: AppTheme.cardSurface,
 
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18),
+                shape:
+                    RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(18),
 
                   side: BorderSide(
-                    color: AppTheme.safeGreen.withValues(
+                    color: AppTheme.safeGreen
+                        .withValues(
                       alpha: 0.8,
                     ),
 
@@ -399,32 +475,39 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
 
                 child: Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding:
+                      const EdgeInsets.all(18),
 
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
 
                     children: [
-                      // HEADER
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        crossAxisAlignment:
+                            CrossAxisAlignment.center,
 
                         children: [
                           Container(
                             width: 54,
                             height: 54,
 
-                            decoration: BoxDecoration(
-                              color: AppTheme.safeGreen.withValues(
+                            decoration:
+                                BoxDecoration(
+                              color: AppTheme
+                                  .safeGreen
+                                  .withValues(
                                 alpha: 0.15,
                               ),
 
-                              shape: BoxShape.circle,
+                              shape:
+                                  BoxShape.circle,
                             ),
 
                             child: const Icon(
                               Icons.security,
-                              color: AppTheme.safeGreen,
+                              color:
+                                  AppTheme.safeGreen,
                               size: 28,
                             ),
                           ),
@@ -435,17 +518,20 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Text(
                               'Phase 3 • Live Protection',
 
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              style:
+                                  Theme.of(context)
+                                      .textTheme
+                                      .titleLarge
+                                      ?.copyWith(
+                                        fontSize: 18,
+                                        fontWeight:
+                                            FontWeight.bold,
+                                      ),
 
                               maxLines: 1,
 
-                              overflow: TextOverflow.ellipsis,
+                              overflow:
+                                  TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -453,39 +539,50 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       const SizedBox(height: 14),
 
-                      // DESCRIPTION
                       const Text(
                         'Real-time voice monitoring with WebSocket streaming, AI detection, and live threat alerts.',
 
                         style: TextStyle(
                           fontSize: 13,
                           height: 1.45,
-                          color: AppTheme.textSecondary,
+                          color:
+                              AppTheme.textSecondary,
                         ),
                       ),
 
                       const SizedBox(height: 16),
 
-                      // START LIVE BUTTON
                       SizedBox(
                         width: double.infinity,
                         height: 50,
 
-                        child: ElevatedButton.icon(
-                          onPressed: _openLiveProtection,
+                        child:
+                            ElevatedButton.icon(
+                          onPressed:
+                              _openLiveProtection,
 
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppTheme.safeGreen,
-                            foregroundColor: Colors.black,
+                          style:
+                              ElevatedButton.styleFrom(
+                            backgroundColor:
+                                AppTheme.safeGreen,
+
+                            foregroundColor:
+                                Colors.black,
+
                             elevation: 0,
 
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
+                            shape:
+                                RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(
+                                12,
+                              ),
                             ),
                           ),
 
                           icon: const Icon(
-                            Icons.shield_outlined,
+                            Icons
+                                .shield_outlined,
                             size: 20,
                           ),
 
@@ -493,8 +590,173 @@ class _HomeScreenState extends State<HomeScreen> {
                             'START LIVE PROTECTION',
 
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
+                              fontWeight:
+                                  FontWeight.bold,
                               fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ======================================================
+              // CALL FEATURE
+              // ======================================================
+
+              Card(
+                color: AppTheme.cardSurface,
+
+                shape:
+                    RoundedRectangleBorder(
+                  borderRadius:
+                      BorderRadius.circular(18),
+
+                  side: BorderSide(
+                    color: AppTheme.cyanAccent
+                        .withValues(
+                      alpha: 0.8,
+                    ),
+
+                    width: 1.5,
+                  ),
+                ),
+
+                child: Padding(
+                  padding:
+                      const EdgeInsets.all(18),
+
+                  child: Column(
+                    crossAxisAlignment:
+                        CrossAxisAlignment.start,
+
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            width: 54,
+                            height: 54,
+
+                            decoration:
+                                BoxDecoration(
+                              color: AppTheme
+                                  .cyanAccent
+                                  .withValues(
+                                alpha: 0.15,
+                              ),
+
+                              shape:
+                                  BoxShape.circle,
+                            ),
+
+                            child: const Icon(
+                              Icons.phone_in_talk,
+                              color:
+                                  AppTheme.cyanAccent,
+                              size: 28,
+                            ),
+                          ),
+
+                          const SizedBox(width: 14),
+
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment:
+                                  CrossAxisAlignment
+                                      .start,
+
+                              children: [
+                                Text(
+                                  'VoiceShield Call',
+
+                                  style:
+                                      Theme.of(context)
+                                          .textTheme
+                                          .titleLarge
+                                          ?.copyWith(
+                                            fontSize: 18,
+                                            fontWeight:
+                                                FontWeight.bold,
+                                          ),
+                                ),
+
+                                const SizedBox(
+                                  height: 4,
+                                ),
+
+                                const Text(
+                                  'Make a protected voice call and monitor it for AI voice scams.',
+
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    height: 1.45,
+                                    color: AppTheme
+                                        .textSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        width: double.infinity,
+                        height: 50,
+
+                        child:
+                            ElevatedButton.icon(
+                          // ==================================================
+                          // IMPORTANT CHANGE
+                          //
+                          // This no longer directly launches Person A.
+                          //
+                          // It launches:
+                          //
+                          // CallRoleScreen
+                          //
+                          // ==================================================
+
+                          onPressed:
+                              _openCallScreen,
+
+                          icon: const Icon(
+                            Icons.call,
+                            size: 20,
+                          ),
+
+                          label: const Text(
+                            'START VOICESHIELD CALL',
+
+                            style: TextStyle(
+                              fontWeight:
+                                  FontWeight.bold,
+                              fontSize: 14,
+                            ),
+                          ),
+
+                          style:
+                              ElevatedButton.styleFrom(
+                            backgroundColor:
+                                AppTheme.cyanAccent,
+
+                            foregroundColor:
+                                Colors.black,
+
+                            elevation: 0,
+
+                            shape:
+                                RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.circular(
+                                12,
+                              ),
                             ),
                           ),
                         ),
@@ -525,26 +787,36 @@ class _HomeScreenState extends State<HomeScreen> {
 
               Row(
                 children: [
-                  // ====================================================
-                  // UPLOAD AUDIO
-                  // ====================================================
-
                   Expanded(
                     child: InkWell(
-                      onTap: _openUploadScreen,
+                      onTap:
+                          _openUploadScreen,
 
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius:
+                          BorderRadius.circular(
+                        16,
+                      ),
 
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding:
+                            const EdgeInsets.all(
+                          16,
+                        ),
 
-                        decoration: BoxDecoration(
-                          color: AppTheme.cardSurface,
+                        decoration:
+                            BoxDecoration(
+                          color:
+                              AppTheme.cardSurface,
 
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius:
+                              BorderRadius.circular(
+                            16,
+                          ),
 
                           border: Border.all(
-                            color: AppTheme.cyanAccent.withValues(
+                            color: AppTheme
+                                .cyanAccent
+                                .withValues(
                               alpha: 0.4,
                             ),
                           ),
@@ -554,17 +826,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Icon(
                               Icons.upload_file,
-                              color: AppTheme.cyanAccent,
+                              color: AppTheme
+                                  .cyanAccent,
                               size: 36,
                             ),
 
-                            SizedBox(height: 12),
+                            SizedBox(
+                                height: 12),
 
                             Text(
                               'Upload Audio',
 
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight:
+                                    FontWeight.bold,
                               ),
                             ),
 
@@ -575,7 +850,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppTheme.textSecondary,
+                                color: AppTheme
+                                    .textSecondary,
                               ),
                             ),
                           ],
@@ -586,26 +862,35 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(width: 16),
 
-                  // ====================================================
-                  // RECORD VOICE
-                  // ====================================================
-
                   Expanded(
                     child: InkWell(
-                      onTap: _openRecordScreen,
+                      onTap:
+                          _openRecordScreen,
 
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius:
+                          BorderRadius.circular(
+                        16,
+                      ),
 
                       child: Container(
-                        padding: const EdgeInsets.all(16),
+                        padding:
+                            const EdgeInsets.all(
+                          16,
+                        ),
 
-                        decoration: BoxDecoration(
-                          color: AppTheme.cardSurface,
+                        decoration:
+                            BoxDecoration(
+                          color:
+                              AppTheme.cardSurface,
 
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius:
+                              BorderRadius.circular(
+                            16,
+                          ),
 
                           border: Border.all(
-                            color: AppTheme.cardBorder,
+                            color:
+                                AppTheme.cardBorder,
                           ),
                         ),
 
@@ -613,17 +898,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           children: [
                             Icon(
                               Icons.mic,
-                              color: AppTheme.dangerRed,
+                              color:
+                                  AppTheme.dangerRed,
                               size: 36,
                             ),
 
-                            SizedBox(height: 12),
+                            SizedBox(
+                                height: 12),
 
                             Text(
                               'Record Voice',
 
                               style: TextStyle(
-                                fontWeight: FontWeight.bold,
+                                fontWeight:
+                                    FontWeight.bold,
                               ),
                             ),
 
@@ -634,7 +922,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                               style: TextStyle(
                                 fontSize: 12,
-                                color: AppTheme.textSecondary,
+                                color: AppTheme
+                                    .textSecondary,
                               ),
                             ),
                           ],
@@ -652,7 +941,9 @@ class _HomeScreenState extends State<HomeScreen> {
               // ======================================================
 
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment:
+                    MainAxisAlignment
+                        .spaceBetween,
 
                 children: [
                   Text(
@@ -667,13 +958,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
 
                   TextButton(
-                    onPressed: _openHistoryScreen,
+                    onPressed:
+                        _openHistoryScreen,
 
                     child: const Text(
                       'View All',
 
                       style: TextStyle(
-                        color: AppTheme.cyanAccent,
+                        color:
+                            AppTheme.cyanAccent,
                       ),
                     ),
                   ),
@@ -682,14 +975,13 @@ class _HomeScreenState extends State<HomeScreen> {
 
               const SizedBox(height: 8),
 
-              // ======================================================
-              // NO HISTORY
-              // ======================================================
-
               if (_recentHistory.isEmpty)
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(16),
+                    padding:
+                        const EdgeInsets.all(
+                      16,
+                    ),
 
                     child: Center(
                       child: Text(
@@ -699,134 +991,152 @@ class _HomeScreenState extends State<HomeScreen> {
                             .textTheme
                             .bodyMedium,
 
-                        textAlign: TextAlign.center,
+                        textAlign:
+                            TextAlign.center,
                       ),
                     ),
                   ),
                 )
-
-              // ======================================================
-              // HISTORY RESULTS
-              // ======================================================
-
               else
                 Column(
-                  children: _recentHistory.map((item) {
-                    final riskLevel =
-                        (item['risk_level'] ?? 'LOW')
-                            .toString()
-                            .toUpperCase();
+                  children:
+                      _recentHistory.map(
+                    (item) {
+                      final riskLevel =
+                          (item['risk_level'] ??
+                                  'LOW')
+                              .toString()
+                              .toUpperCase();
 
-                    final isHigh = riskLevel == 'HIGH';
-                    final isMed = riskLevel == 'MEDIUM';
+                      final isHigh =
+                          riskLevel == 'HIGH';
 
-                    final color = isHigh
-                        ? AppTheme.dangerRed
-                        : (isMed
-                            ? AppTheme.warningAmber
-                            : AppTheme.safeGreen);
+                      final isMed =
+                          riskLevel == 'MEDIUM';
 
-                    final filename =
-                        (item['filename'] ??
-                                item['file_name'] ??
-                                'Audio Analysis')
-                            .toString();
+                      final color = isHigh
+                          ? AppTheme.dangerRed
+                          : (isMed
+                              ? AppTheme
+                                  .warningAmber
+                              : AppTheme.safeGreen);
 
-                    final riskScore =
-                        item['risk_score'] ?? 0;
+                      final filename =
+                          (item['filename'] ??
+                                  item[
+                                      'file_name'] ??
+                                  'Audio Analysis')
+                              .toString();
 
-                    final voiceResult =
-                        (item['voice_result'] ??
-                                item['voice_detection'] ??
-                                '')
-                            .toString();
+                      final riskScore =
+                          item['risk_score'] ?? 0;
 
-                    return Card(
-                      margin: const EdgeInsets.only(
-                        bottom: 8,
-                      ),
+                      final voiceResult =
+                          (item['voice_result'] ??
+                                  item[
+                                      'voice_detection'] ??
+                                  '')
+                              .toString();
 
-                      child: ListTile(
-                        contentPadding:
-                            const EdgeInsets.symmetric(
-                          horizontal: 14,
-                          vertical: 4,
+                      return Card(
+                        margin:
+                            const EdgeInsets.only(
+                          bottom: 8,
                         ),
 
-                        leading: CircleAvatar(
-                          backgroundColor:
-                              color.withValues(alpha: 0.2),
-
-                          child: Icon(
-                            isHigh
-                                ? Icons.warning_amber
-                                : Icons.security,
-
-                            color: color,
-                          ),
-                        ),
-
-                        title: Text(
-                          filename,
-
-                          overflow:
-                              TextOverflow.ellipsis,
-
-                          maxLines: 1,
-                        ),
-
-                        subtitle: Text(
-                          'Risk Score: $riskScore/100 • $riskLevel',
-
-                          overflow:
-                              TextOverflow.ellipsis,
-
-                          maxLines: 1,
-                        ),
-
-                        trailing: Container(
-                          constraints:
-                              const BoxConstraints(
-                            maxWidth: 90,
-                          ),
-
-                          padding:
-                              const EdgeInsets.symmetric(
-                            horizontal: 8,
+                        child: ListTile(
+                          contentPadding:
+                              const EdgeInsets
+                                  .symmetric(
+                            horizontal: 14,
                             vertical: 4,
                           ),
 
-                          decoration: BoxDecoration(
-                            color:
+                          leading: CircleAvatar(
+                            backgroundColor:
                                 color.withValues(
                               alpha: 0.2,
                             ),
 
-                            borderRadius:
-                                BorderRadius.circular(8),
+                            child: Icon(
+                              isHigh
+                                  ? Icons
+                                      .warning_amber
+                                  : Icons.security,
+
+                              color: color,
+                            ),
                           ),
 
-                          child: Text(
-                            voiceResult.isEmpty
-                                ? riskLevel
-                                : voiceResult,
-
-                            maxLines: 1,
+                          title: Text(
+                            filename,
 
                             overflow:
-                                TextOverflow.ellipsis,
+                                TextOverflow
+                                    .ellipsis,
 
-                            style: TextStyle(
-                              color: color,
-                              fontSize: 10,
-                              fontWeight:
-                                  FontWeight.bold,
+                            maxLines: 1,
+                          ),
+
+                          subtitle: Text(
+                            'Risk Score: $riskScore/100 • $riskLevel',
+
+                            overflow:
+                                TextOverflow
+                                    .ellipsis,
+
+                            maxLines: 1,
+                          ),
+
+                          trailing: Container(
+                            constraints:
+                                const BoxConstraints(
+                              maxWidth: 90,
+                            ),
+
+                            padding:
+                                const EdgeInsets
+                                    .symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+
+                            decoration:
+                                BoxDecoration(
+                              color:
+                                  color.withValues(
+                                alpha: 0.2,
+                              ),
+
+                              borderRadius:
+                                  BorderRadius.circular(
+                                8,
+                              ),
+                            ),
+
+                            child: Text(
+                              voiceResult.isEmpty
+                                  ? riskLevel
+                                  : voiceResult,
+
+                              maxLines: 1,
+
+                              overflow:
+                                  TextOverflow
+                                      .ellipsis,
+
+                              style: TextStyle(
+                                color: color,
+                                fontSize: 10,
+                                fontWeight:
+                                    FontWeight.bold,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
+                      );
+                    },
+                  ).toList(),
                 ),
 
               const SizedBox(height: 24),
@@ -839,7 +1149,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: ListTile(
                   leading: const Icon(
                     Icons.shield,
-                    color: AppTheme.cyanAccent,
+                    color:
+                        AppTheme.cyanAccent,
                   ),
 
                   title: const Text(
@@ -852,7 +1163,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   trailing: const Icon(
                     Icons.chevron_right,
-                    color: AppTheme.cyanAccent,
+                    color:
+                        AppTheme.cyanAccent,
                   ),
 
                   onTap: () {

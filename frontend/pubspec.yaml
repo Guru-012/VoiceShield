@@ -39,8 +39,8 @@ dependencies:
   record: ^6.2.1
   permission_handler: ^11.3.0
   audioplayers: ^6.7.1
-  flutter_webrtc: ^1.6.2+hotfix.1
-  web_socket_channel: ^3.0.0
+  flutter_webrtc: ^1.6.2+hotfix.3
+  web_socket_channel: ^3.0.3
   path_provider: ^2.1.5
   shared_preferences: ^2.5.3
 
@@ -55,6 +55,7 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.4
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -70,6 +71,7 @@ flutter:
 
   assets:
     - assets/audio/high_risk_alert.mp3
+    - assets/images/security.png
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -101,3 +103,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/security.png"

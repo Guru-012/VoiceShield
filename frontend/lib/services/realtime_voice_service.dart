@@ -82,7 +82,7 @@ class RealtimeVoiceService {
   Function(String errorMessage)? onErrorOccurred;
   Function(bool isActive)? onSessionStateChanged;
 
-RealtimeVoiceService({this.serverHost = '192.168.29.137:8000'});
+RealtimeVoiceService({this.serverHost = '192.168.0.6:8000'});
   String? get activeSessionId => _activeSessionId;
   bool get isStreaming => _isStreaming;
 

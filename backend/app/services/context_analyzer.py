@@ -12,7 +12,7 @@ class ContextAnalyzer:
         "financial_request": [
             r"transfer", r"send money", r"rupees", r"dollars", r"account", r"bank",
             r"pay immediately", r"payment", r"up[i1]", r"gpay", r"phonepe", r"cash",
-            r"wire transfer", r"credit card", r"deposit"
+            r"wire transfer", r"credit card", r"deposit",r"link"
         ],
         "otp_request": [
             r"otp", r"one time password", r"verification code", r"pin", r"password", r"cvv", r"security code"
@@ -22,7 +22,7 @@ class ContextAnalyzer:
         ],
         "impersonation_detected": [
             r"bank manager", r"officer", r"police", r"crime branch", r"government",
-            r"law enforcement", r"cbi", r"customs", r"manager", r"boss", r"agent", r"support"
+            r"law enforcement", r"cbi", r"customs", r"manager", r"boss", r"agent", r"support",r"press the link","link"
         ],
         "secrecy_coercion": [
             r"don'?t tell", r"do not tell", r"keep this confidential", r"do not hang up", r"secret", r"inform no one", r"keep silent"

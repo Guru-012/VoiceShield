@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/analysis_result.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://192.168.29.137:8000';
+  static const String baseUrl = 'http://192.168.0.6:8000';
 
   static const String _historyStorageKey =
       'voiceshield_local_analysis_history';
